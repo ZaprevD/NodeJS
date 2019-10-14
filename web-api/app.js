@@ -76,9 +76,9 @@ app.get("/read", (req, res) => {                  // READ FROM FILE
 });
 
 app.get("/users", (req, res) => {                    // GET ALL USERS
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let final = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let final = JSON.parse(rawdata);
         res.send(final);
     } catch (error) {
         res.send(error)
@@ -86,9 +86,9 @@ app.get("/users", (req, res) => {                    // GET ALL USERS
 })
 
 app.get("/users/:name", (req, res) => {              // GET USER BY NAME
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let clearData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let clearData = JSON.parse(rawdata);
         let result = clearData.filter((current) => current.name.toLowerCase() === req.params.name.toLowerCase());
         res.send(result);
     } catch (error) {
@@ -97,9 +97,9 @@ app.get("/users/:name", (req, res) => {              // GET USER BY NAME
 })
 
 app.post("/users", (req, res) => {               // CREATE USER
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let clearData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let clearData = JSON.parse(rawdata);
         clearData.push(req.body);
         fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
         res.send("User added");
@@ -110,9 +110,9 @@ app.post("/users", (req, res) => {               // CREATE USER
 
  
 app.put("/users/:name", (req, res) => {           // UPDATE USER
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let clearData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let clearData = JSON.parse(rawdata);
         for (var i = 0; i < clearData.length; i++) {
             if (clearData[i].name.toLowerCase() === req.params.name.toLowerCase()) {
                 clearData[i] = req.body;
@@ -129,9 +129,9 @@ app.put("/users/:name", (req, res) => {           // UPDATE USER
 });
 
 app.patch("/users/:name", (req, res) => {               // PARTIAL UPDATE
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let clearData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let clearData = JSON.parse(rawdata);
         clearData.forEach((current) => {
             if (current.name.toLowerCase() === req.params.name.toLowerCase()) {
                 current.age = req.body.age;
@@ -150,9 +150,9 @@ app.patch("/users/:name", (req, res) => {               // PARTIAL UPDATE
 
 
 app.delete("/users/:name", (req, res) => {           // DELETE USER
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let clearData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let clearData = JSON.parse(rawdata);
         clearData.forEach((current) => {
             if (current.name.toLowerCase() === req.params.name.toLowerCase()) {
                 clearData.splice(clearData.indexOf(current), 1);
@@ -168,9 +168,9 @@ app.delete("/users/:name", (req, res) => {           // DELETE USER
 })
 
 app.get("/active", (req, res) => {              // GET ACTIVE USERS
-    let rawdata = fs.readFileSync("web-api/user.json");
-    let clearData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/user.json");
+        let clearData = JSON.parse(rawdata);
         let activeUsers = clearData.filter((current) => {
             return current.isActive;
         })
