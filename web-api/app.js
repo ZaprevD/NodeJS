@@ -1,5 +1,4 @@
 var express = require('express');
-require('dotenv/config');
 var bodyParser = require('body-parser');
 
 const app = express();
@@ -66,9 +65,9 @@ app.get("/write", (req, res) => {                // WRITE TO FILE
 });
  
 app.get("/read", (req, res) => {                  // READ FROM FILE
-    let rawdata = fs.readFileSync("web-api/data.json");
-    let jsonData = JSON.parse(rawdata);
     try {
+        let rawdata = fs.readFileSync("web-api/data.json");
+        let jsonData = JSON.parse(rawdata);
         res.send(jsonData);
     } catch (error) {
         res.send(error);
