@@ -9,9 +9,9 @@
     {
         "name": "Martin",
         "surname": "Martinovski",
-        "email": "margin123@gmail.com",
-        "age": 26,
-        "isActive": true
+        "email": "martin@gmail.com",
+        "age": 20,
+        "isActive": false
     },
     {
         "name": "Filip",

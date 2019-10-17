@@ -31,15 +31,6 @@ app.use(bodyParser.json())
 //     res.send(`Napravivte PATCH vrednosta e ${req.params.num}`);
 // });
 
-
-
-var port = process.env.PORT || 8080;
-
-app.listen(port, () => {
-    console.log(`API is listenig on port ${port}!`);
-});
-
-
 let data = [
     {
         user: "user1",
@@ -63,7 +54,7 @@ app.get("/write", (req, res) => {                // WRITE TO FILE
         res.send(error)
     }
 });
- 
+
 app.get("/read", (req, res) => {                  // READ FROM FILE
     try {
         let rawdata = fs.readFileSync("web-api/data.json");
@@ -84,11 +75,11 @@ app.get("/users", (req, res) => {                    // GET ALL USERS
     }
 })
 
-app.get("/users/:name", (req, res) => {              // GET USER BY NAME
+app.get("/users/:id", (req, res) => {              // GET USER BY ID
     try {
         let rawdata = fs.readFileSync("web-api/user.json");
         let clearData = JSON.parse(rawdata);
-        let result = clearData.filter((current) => current.name.toLowerCase() === req.params.name.toLowerCase());
+        let result = clearData.filter((current) => current.id === parseInt(req.params.id));
         res.send(result);
     } catch (error) {
         res.send(error);
@@ -107,76 +98,84 @@ app.post("/users", (req, res) => {               // CREATE USER
     }
 })
 
- 
-app.put("/users/:name", (req, res) => {           // UPDATE USER
-    try {
-        let rawdata = fs.readFileSync("web-api/user.json");
-        let clearData = JSON.parse(rawdata);
-        for (var i = 0; i < clearData.length; i++) {
-            if (clearData[i].name.toLowerCase() === req.params.name.toLowerCase()) {
-                clearData[i] = req.body;
-                fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
-                res.send("USER UPDATED");
-                return;
-            }
-        }
-        res.send("User not found");
-    } catch (error) {
-        res.send(error);
-    }
 
-});
-
-app.patch("/users/:name", (req, res) => {               // PARTIAL UPDATE
-    try {
-        let rawdata = fs.readFileSync("web-api/user.json");
-        let clearData = JSON.parse(rawdata);
+app.put("/users/:id", (req, res) => {           // UPDATE USER
+    let rawdata = fs.readFileSync("web-api/user.json");
+    let clearData = JSON.parse(rawdata);
+    const found = clearData.some(element => element.id === parseInt(req.params.id));
+    if (found) {
         clearData.forEach((current) => {
-            if (current.name.toLowerCase() === req.params.name.toLowerCase()) {
-                current.age = req.body.age;
+            if (current.id == parseInt(req.params.id)) {
+                current.name = req.body.name;
+                current.surname = req.body.surname;
                 current.email = req.body.email;
+                current.age = req.body.age;
                 current.isActive = req.body.isActive;
-                fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
-                res.send("Updated!");
-                return;
             }
-        })
-        res.send("User not found");
-    } catch (error) {
-        res.send(error);
+        });
+        res.status(201).send("USER UPDATED");
+    } else {
+        res.status(402).send("User not found");
+    };
+    fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
+});
+
+app.patch("/users/:id", (req, res) => {               // PARTIAL UPDATE
+    let rawdata = fs.readFileSync("web-api/user.json");
+    let clearData = JSON.parse(rawdata);
+    var input = req.body;
+    const found = clearData.some(member => member.id === parseInt(req.params.id));
+    if (found) {
+        clearData.forEach((current) => {
+            if (current.id === parseInt(req.params.id)) {
+                current.age = input.age ? input.age : current.age;
+                current.email = input.email ? input.email : current.email;
+                current.isActive = input.isActive !== undefined ? input.isActive : current.isActive;
+            };
+        });
+        res.status(200).send("Updated!");
+    } else {
+        res.status(400).send("User not found");
     }
+    fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
 });
 
 
-app.delete("/users/:name", (req, res) => {           // DELETE USER
-    try {
-        let rawdata = fs.readFileSync("web-api/user.json");
-        let clearData = JSON.parse(rawdata);
+app.delete("/users/:id", (req, res) => {           // DELETE USER
+    let rawdata = fs.readFileSync("web-api/user.json");
+    let clearData = JSON.parse(rawdata);
+    const found = clearData.some(element => element.id === parseInt(req.params.id));
+    if (found) {
         clearData.forEach((current) => {
-            if (current.name.toLowerCase() === req.params.name.toLowerCase()) {
+            if (current.id === parseInt(req.params.id)) {
                 clearData.splice(clearData.indexOf(current), 1);
-                fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
-                res.send("USER DELETED");
-                return;
+                res.status(200).send("USER DELETED");
             }
-        })
-        res.send("User not found");
-    } catch (error) {
-        res.send(error)
+        });
+    } else {
+        res.status(400).send("User not found");
     }
-})
+    fs.writeFileSync("web-api/user.json", JSON.stringify(clearData));
+});
 
 app.get("/active", (req, res) => {              // GET ACTIVE USERS
-    try {
         let rawdata = fs.readFileSync("web-api/user.json");
         let clearData = JSON.parse(rawdata);
+        const found = clearData.some(element => element.isActive);
+        if(found){
         let activeUsers = clearData.filter((current) => {
             return current.isActive;
         })
-        res.send(activeUsers)
-    } catch (error) {
-        res.send(error)
+        res.status(200).send(activeUsers)
+    }else{
+        res.status(400).send("no active user found");
     }
-})
+});
+
+var port = process.env.PORT || 8080;
+
+app.listen(port, () => {
+    console.log(`API is listenig on port ${port}!`);
+});
 
 
