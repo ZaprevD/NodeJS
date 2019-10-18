@@ -149,9 +149,9 @@ app.delete("/users/:id", (req, res) => {           // DELETE USER
         clearData.forEach((current) => {
             if (current.id === parseInt(req.params.id)) {
                 clearData.splice(clearData.indexOf(current), 1);
-                res.status(200).send("USER DELETED");
             }
         });
+        res.status(200).send("USER DELETED");
     } else {
         res.status(400).send("User not found");
     }
