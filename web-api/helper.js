@@ -25,10 +25,17 @@ emailValidator = (req,res, next) => {
   };
 
 
-
-
+isAdult = (req, res , next) => {
+  let age = req.body.age;
+  if(age < 18){
+    var error = new Error("You must be 18 or older!");
+    error.status = 416;
+    next(error)
+  }
+  next();
+}
 
 
 module.exports = {
- emailValidator
+ emailValidator, isAdult
 }

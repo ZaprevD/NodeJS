@@ -2,13 +2,13 @@ var express = require("express");
 const routes = express.Router();
 const actions = require("./actions");
 const {emailValidator} = require("../helper");
-
+const {isAdult} = require("../helper");
 
 routes.get("/", actions.getAllUsers);
 
 routes.get("/:id",actions.getUserById);
 
-routes.post("/", emailValidator, actions.createUser);
+routes.post("/", isAdult, emailValidator, actions.createUser);
 
 routes.put("/:id", actions.updateUser);
 
