@@ -21,7 +21,7 @@
         "surname": "Filipovski",
         "email": "filip@gmail.com",
         "age": 31,
-        "isActive": true
+        "isActive": false
     },
     {
         "id": 4,
