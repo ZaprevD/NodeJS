@@ -11,7 +11,7 @@ getAllUsers = (req, res) => {                    // GET ALL USERS
     }
 };
 
-getUserById =  (req, res, next) => {              // GET USER BY ID
+getUserById = (req, res, next) => {              // GET USER BY ID
     try {
         let rawdata = fs.readFileSync(path.join(__dirname, "user.json"));
         let clearData = JSON.parse(rawdata);
@@ -19,7 +19,7 @@ getUserById =  (req, res, next) => {              // GET USER BY ID
         if (found) {
             let result = clearData.filter((current) => current.id === parseInt(req.params.id));
             res.status(200).send(result);
-        }else{
+        } else {
             var error = new Error("User does not exist");
             error.status = 400;
             next(error);
@@ -33,9 +33,16 @@ createUser = (req, res) => {               // CREATE USER
     try {
         let rawdata = fs.readFileSync(path.join(__dirname, "user.json"));
         let clearData = JSON.parse(rawdata);
-        clearData.push(req.body);
-        fs.writeFileSync(path.join(__dirname, "user.json"), JSON.stringify(clearData));
-        res.send("User added");
+        const found = clearData.some(element => element.id === req.body.id);
+        if (!found) {
+            clearData.push(req.body);
+            fs.writeFileSync(path.join(__dirname, "user.json"), JSON.stringify(clearData));
+            res.status(200).send("User added");
+        } else {
+            var error = new Error(`User with ${req.body.id} alredy exist`);
+            error.status = 409;
+            next(error);
+        }
     } catch (error) {
         res.send(error);
     }
@@ -57,7 +64,7 @@ updateUser = (req, res, next) => {           // UPDATE USER
             }
         });
         res.status(201).send("USER UPDATED");
-    } else {    
+    } else {
         var error = new Error("User not found");
         error.status = 404;
         next(error);
@@ -65,7 +72,7 @@ updateUser = (req, res, next) => {           // UPDATE USER
     fs.writeFileSync(path.join(__dirname, "user.json"), JSON.stringify(clearData));
 };
 
-partialUpdateUser =  (req, res, next) => {               // PARTIAL UPDATE
+partialUpdateUser = (req, res, next) => {               // PARTIAL UPDATE
     let rawdata = fs.readFileSync(path.join(__dirname, "user.json"));
     let clearData = JSON.parse(rawdata);
     var input = req.body;
@@ -87,7 +94,7 @@ partialUpdateUser =  (req, res, next) => {               // PARTIAL UPDATE
     fs.writeFileSync(path.join(__dirname, "user.json"), JSON.stringify(clearData));
 };
 
-deleteUser =  (req, res, next) => {           // DELETE USER
+deleteUser = (req, res, next) => {           // DELETE USER
     let rawdata = fs.readFileSync(path.join(__dirname, "user.json"));
     let clearData = JSON.parse(rawdata);
     const found = clearData.some(element => element.id === parseInt(req.params.id));
@@ -126,5 +133,5 @@ getActiveUsers = (req, res, next) => {              // GET ACTIVE USERS
 
 
 module.exports = {
-    getAllUsers, getUserById, createUser, updateUser, partialUpdateUser, deleteUser,getActiveUsers
+    getAllUsers, getUserById, createUser, updateUser, partialUpdateUser, deleteUser, getActiveUsers
 }
