@@ -13,7 +13,20 @@ getAllPostsQuery = () => {
     });
 };
 
-getAllPosts = async (req, res, next) => {     // GET POSTS
+createNewPostQuery = (body) => {
+    const query = "INSERT INTO posts (Text , Likes, CreatedOn, UserId) VALUES(?,?,NOW(),?)";
+    return new Promise((resolve, reject) => {
+        conn.query(query, [body.text, body.likes, body.userId], (error, results, fields) => {
+            if (error) {
+                reject(error)
+            } else {
+                resolve();
+            };
+        });
+    });
+};
+
+getAllPosts = async (req, res, next) => {      // GET POSTS
     try {
         let posts = await getAllPostsQuery();
         res.status(200).send(posts);
@@ -23,14 +36,10 @@ getAllPosts = async (req, res, next) => {     // GET POSTS
     };
 };
 
-createPost = (req, res, next) => {    //CREATE NEW POST
+createPost = async (req, res, next) => {      //CREATE NEW POST
     try {
-        let query = "INSERT INTO posts (Text, Likes, CreatedOn) VALUES (? ,? ,?)";
-        let post = [req.body.text, req.body.likes, new Date()];
-        conn.query(query, post, (error, results, fields) => {
-            if (error) throw error;
-            res.status(200).send("Post Created!");
-        });
+        await createNewPostQuery(req.body);
+        res.status(200).send("Post Added");
     } catch (error) {
         res.send(error.message);
     }
@@ -54,21 +63,21 @@ deletePost = (req, res, next) => {      // DELETE POST
     }
 }
 
-updatePost = (req,res,next) => {   // UPDATE POST
+updatePost = (req, res, next) => {   // UPDATE POST
     let query;
     let val = [];
     if (parseInt(req.params.id) !== 0) {
-        if(req.body.text){
+        if (req.body.text) {
             query = "UPDATE posts SET Text = ? WHERE Id = ?";
-            val = [req.body.text , req.params.id];
+            val = [req.body.text, req.params.id];
         };
-        if(req.body.likes){
+        if (req.body.likes) {
             query = "UPDATE posts SET Likes = ? WHERE Id = ?";
-            val = [req.body.likes , req.params.id];
+            val = [req.body.likes, req.params.id];
         };
-        if(req.body.createdOn){
+        if (req.body.createdOn) {
             query = "UPDATE posts SET CreatedOn = ? WHERE Id = ?";
-            val = [req.body.createdOn,req.params.id];
+            val = [req.body.createdOn, req.params.id];
         };
 
         conn.query(query, val, (error, results, fields) => {
@@ -83,4 +92,4 @@ updatePost = (req,res,next) => {   // UPDATE POST
     };
 }
 
-module.exports = { getAllPosts, createPost, deletePost , updatePost };
+module.exports = { getAllPosts, createPost, deletePost, updatePost };
