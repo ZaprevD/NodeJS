@@ -14,7 +14,6 @@ getAllPostsQuery = () => {
     });
 };
 
-
 createNewPostQuery = (body) => {
     const query = "INSERT INTO posts (Text , Likes, CreatedOn, UserId) VALUES(?,?,NOW(),?)";
     return new Promise((resolve, reject) => {
@@ -28,4 +27,19 @@ createNewPostQuery = (body) => {
     });
 };
 
-module.exports = {getAllPostsQuery , createNewPostQuery};
+deletePostQuery = (paramId) => {
+    let query = "DELETE FROM posts WHERE Id = ?";
+    return new Promise((resolve,reject) => {
+        conn.query(query , [paramId] , (error, results, fields) => {
+            if(error){
+                reject(error);
+            }else{
+                resolve();
+            }
+        }); 
+    });
+};
+
+
+
+module.exports = {getAllPostsQuery , createNewPostQuery,deletePostQuery};

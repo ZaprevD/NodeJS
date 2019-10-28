@@ -1,5 +1,7 @@
 const conn = require("../database");
-const {getAllPostsQuery , createNewPostQuery} = require("./queries/query");
+const {getAllPostsQuery , createNewPostQuery, deletePostQuery} = require("./queries/query");
+
+
 
 getAllPosts = async (req, res, next) => {      // GET POSTS
     try {
@@ -20,19 +22,10 @@ createPost = async (req, res, next) => {      //CREATE NEW POST
     }
 };
 
-deletePost = (req, res, next) => {      // DELETE POST
+deletePost = async(req, res, next) => {      // DELETE POST
     try {
-        if (parseInt(req.params.id) !== 0) {
-            let query = "DELETE FROM posts WHERE Id = ?";
-            conn.query(query, [req.params.id], (error, results, fields) => {
-                if (error) throw error;
-                res.status(200).send("Post Deleted!");
-            });
-        } else {
-            var error = new Error("ID cannot be 0");
-            error.status = 400;
-            next(error);
-        }
+        await deletePostQuery(req.params.id);
+        res.status(200).send("POST DELETED!");
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -65,6 +58,6 @@ updatePost = (req, res, next) => {   // UPDATE POST
         error.status = 422;
         next(error);
     };
-}
+};
 
 module.exports = { getAllPosts, createPost, deletePost, updatePost };
