@@ -1,19 +1,16 @@
 const conn = require("../database");
 const { getAllPostsQuery, createNewPostQuery, deletePostQuery, updatePostQuery, getSpecificPostQuery } = require("./queries/query");
 
-
-
-getAllPosts = async (req, res, next) => {      // GET POSTS
+getAllPosts = async (req, res, next) => {        // GET POSTS
     try {
-        let posts = await getAllPostsQuery();
+        let posts = await getAllPostsQuery(req.params.id);
         res.status(200).send(posts);
-
     } catch (error) {
         res.status(500).send(error.message);
     };
 };
 
-getSpecificPost = async (req, res, next) => {   // GET POST BY ID
+getSpecificPost = async (req, res, next) => {    // GET POST BY ID
     try {
         let post = await getSpecificPostQuery(req.params.id);
         res.status(200).send(post);
@@ -22,7 +19,7 @@ getSpecificPost = async (req, res, next) => {   // GET POST BY ID
     };
 };
 
-createPost = async (req, res, next) => {      //CREATE NEW POST
+createPost = async (req, res, next) => {         //CREATE NEW POST
     try {
         await createNewPostQuery(req.body);
         res.status(200).send("Post Added");

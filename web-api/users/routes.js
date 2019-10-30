@@ -12,10 +12,10 @@ routes.post("/", isAdult, emailValidator, actions.createUser);
 
 routes.put("/:id", actions.updateUser);
 
-routes.patch("/:id", actions.partialUpdateUser);
+// routes.patch("/:id", actions.partialUpdateUser);
 
 routes.delete("/:id", actions.deleteUser);
 
-routes.get("/active", actions.getActiveUsers);
+routes.get("/active/1", actions.getActiveUsers);
 
-module.exports = routes
+module.exports = routes;

@@ -1,10 +1,10 @@
 const conn = require("../../database");
 
 
-getAllPostsQuery = () => {
-    let query = "SELECT * FROM posts";
+getAllPostsQuery = (userId) => {
+    let query = "SELECT * FROM posts JOIN user ON user.Id = posts.UserId WHERE UserId = ?";
     return new Promise((resolve, reject) => {
-        conn.query(query, (error, results, fields) => {
+        conn.query(query, [userId], (error, results, fields) => {
             if (error) {
                 reject(error);
             } else {

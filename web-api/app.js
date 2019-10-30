@@ -6,7 +6,6 @@ let users = require("./users/routes");
 let posts = require("./posts/routes");
 require("dotenv/config");
 
-
 app.use(middlewares.logger);
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use("/users",users);
 
-app.use("/posts" , posts)
+app.use("/users" , posts)
 
 app.use(middlewares.errorHandler);
 
